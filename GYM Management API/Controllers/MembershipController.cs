@@ -84,7 +84,7 @@ namespace GYM_Management_API.Controllers
             {
                 return BadRequest("Cannot create membership for inactive member.");
             }
-            if(membership.EndDate <= membership.StartDate)
+            if(membership.EndDate < membership.StartDate)
             {
                 return BadRequest("EndDate must be after StartDate.");
             }
@@ -126,7 +126,7 @@ namespace GYM_Management_API.Controllers
             {
                 return BadRequest("Cannot update membership for inactive member.");
             }
-            if(updatedMembership.EndDate <= updatedMembership.StartDate)
+            if(updatedMembership.EndDate < updatedMembership.StartDate)
             {
                 return BadRequest("EndDate must be after StartDate.");
             }

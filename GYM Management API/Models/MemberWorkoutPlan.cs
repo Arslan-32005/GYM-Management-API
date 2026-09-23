@@ -9,6 +9,6 @@ namespace GYM_Management_API.Models
         public int WorkoutPlanId { get; set; }
         public WorkoutPlan WorkoutPlan { get; set; }
         public DateTime AssignedDate { get; set; }
-        public string Notes { get; set; }
+        public string ?Notes { get; set; }
     }
 }

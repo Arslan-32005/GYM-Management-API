@@ -15,7 +15,7 @@ namespace GYM_Management_API.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult> GetAllMembers(string search, bool IsActive, int? TrainerId, string? sortByDate, int page = 1, int pageSize = 5)
+        public async Task<ActionResult> GetAllMembers(string search, bool? IsActive, int? TrainerId, string? sortByDate, int page = 1, int pageSize = 5)
         {
             IQueryable<Member> query = _context.Members;
             if (!string.IsNullOrEmpty(search))
@@ -27,9 +27,9 @@ namespace GYM_Management_API.Controllers
             {
                 query = query.Where(m => m.TrainerId == TrainerId.Value);
             }
-            if(IsActive)
+            if(IsActive.HasValue)
             {
-                query = query.Where(m => m.IsActive == true);
+                query = query.Where(m => m.IsActive == IsActive.Value);
             }
             if (sortByDate == "asc")
             {
@@ -150,7 +150,7 @@ namespace GYM_Management_API.Controllers
             member.IsActive = updatedMember.IsActive;
             member.TrainerId = updatedMember.TrainerId;
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok(member);
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMember(int id)

@@ -45,7 +45,7 @@ namespace GYM_Management_API.Controllers
                 {
                     wp.Id,
                     wp.Name,
-                    wp.DurationInWeeks,
+                    wp.DurationWeeks,
                     wp.Goal,
                     wp.DifficultyLevel,
                     assignments = wp.MemberWorkoutPlans.Select(mw => new
@@ -65,7 +65,7 @@ namespace GYM_Management_API.Controllers
             {
                 return NotFound();
             }
-            return Ok(workoutPlan);
+            return Ok();
         }
         [HttpPost]
         public async Task<ActionResult> CreateWorkoutPlan(WorkoutPlan workoutPlan)
@@ -88,11 +88,11 @@ namespace GYM_Management_API.Controllers
                 return NotFound();
             }
             workoutPlan.Name = updatedWorkoutPlan.Name;
-            workoutPlan.DurationInWeeks = updatedWorkoutPlan.DurationInWeeks;
+            workoutPlan.DurationWeeks = updatedWorkoutPlan.DurationWeeks;
             workoutPlan.Goal = updatedWorkoutPlan.Goal;
             workoutPlan.DifficultyLevel = updatedWorkoutPlan.DifficultyLevel;
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok(updatedWorkoutPlan);
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteWorkoutPlan(int id)

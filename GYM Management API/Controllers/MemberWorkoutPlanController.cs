@@ -82,7 +82,7 @@ namespace GYM_Management_API.Controllers
             {
                 return BadRequest("Member is not active");
             }
-            var Plan = await _context.MemberWorkoutPlans.FindAsync(memberWorkoutPlan.WorkoutPlanId);
+            var Plan = await _context.WorkoutPlans.FindAsync(memberWorkoutPlan.WorkoutPlanId);
             if(Plan == null)
             {
                 return BadRequest("Invalid WorkoutPlanId");

@@ -16,10 +16,10 @@ namespace GYM_Management_API.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult<Trainer>> GetAllTrainers(bool IsAvailable, string specialization, int page=1)
+        public async Task<ActionResult<Trainer>> GetAllTrainers(bool IsAvailable, string specialization, int page=1, int pageSize = 5)
         {
             
-            int pageSize = 5;
+            
             IQueryable<Trainer> trainers = _context.Trainers; 
             if (IsAvailable)
             {
