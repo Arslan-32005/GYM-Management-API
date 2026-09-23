@@ -15,9 +15,12 @@ namespace GYM_Management_API.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult>GetAllMemberships(int ?memberId, string paymentStatus, int page = 1)
+        public async Task<ActionResult> GetAllMemberships(int? memberId, string? paymentStatus, int page = 1, int pageSize = 5)
         {
-            int pageSize = 5;
+            if (page < 1 || pageSize < 1)
+            {
+                return BadRequest("Page and pageSize must be greater than 0.");
+            }
             IQueryable<Membership> memberships = _context.Memberships;
             if(memberId.HasValue)
             {
@@ -46,7 +49,16 @@ namespace GYM_Management_API.Controllers
                         m.Member.Email
                     }
                 }).ToListAsync();
-            return Ok(membershipsList);
+            var totalPages = (int)Math.Ceiling((double)totalMemberships / pageSize);
+
+            return Ok(new
+            {
+                items = membershipsList,
+                page,
+                pageSize,
+                totalItems = totalMemberships,
+                totalPages
+            });
         }
         [HttpGet("{id}")]
         public async Task<ActionResult>GetMembership(int id)

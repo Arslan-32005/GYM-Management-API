@@ -16,23 +16,37 @@ namespace GYM_Management_API.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult<Trainer>> GetAllTrainers(bool IsAvailable, string specialization, int page=1, int pageSize = 5)
+        public async Task<ActionResult<Trainer>> GetAllTrainers(bool? IsAvailable, string? specialization, int page = 1, int pageSize = 5)
         {
-            
-            
-            IQueryable<Trainer> trainers = _context.Trainers; 
-            if (IsAvailable)
+            if (page < 1 || pageSize < 1)
             {
-                trainers = trainers.Where(t => t.IsAvailable);
+                return BadRequest("Page and pageSize must be greater than 0.");
+            }
+
+            IQueryable<Trainer> trainers = _context.Trainers;
+            if (IsAvailable.HasValue)
+            {
+                trainers = trainers.Where(t => t.IsAvailable == IsAvailable.Value);
             }
             if(!string.IsNullOrEmpty(specialization))
             {
                 trainers = trainers.Where(t => t.Specialization.Contains(specialization));
             }
+            var total = await trainers.CountAsync();
+
             trainers = trainers.Skip((page - 1) * pageSize).Take(pageSize);
             var trainer = await trainers.ToListAsync();
 
-            return Ok(trainer);
+            var totalPages = (int)Math.Ceiling((double)total / pageSize);
+
+            return Ok(new
+            {
+                items = trainer,
+                page,
+                pageSize,
+                totalItems = total,
+                totalPages
+            });
         }
         [HttpGet("{id}")]
         public async Task<ActionResult> GetTrainer(int id)

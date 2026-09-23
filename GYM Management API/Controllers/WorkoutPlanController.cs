@@ -15,8 +15,13 @@ namespace GYM_Management_API.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult>GetAllWorkoutPlans(string ? search,string? Goal, string? DifficultyLevel, int page = 1, int pageSize = 10)
+        public async Task<ActionResult> GetAllWorkoutPlans(string? search, string? Goal, string? DifficultyLevel, int page = 1, int pageSize = 10)
         {
+            if (page < 1 || pageSize < 1)
+            {
+                return BadRequest("Page and pageSize must be greater than 0.");
+            }
+
             IQueryable<WorkoutPlan> workoutPlans = _context.WorkoutPlans;
             if (!string.IsNullOrEmpty(search))
             {
@@ -30,10 +35,23 @@ namespace GYM_Management_API.Controllers
             {
                 workoutPlans = workoutPlans.Where(wp => wp.DifficultyLevel==DifficultyLevel);
             }
-            var total=await workoutPlans.CountAsync();
-            var items = await workoutPlans.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-            return Ok(items);
+            var total = await workoutPlans.CountAsync();
 
+            var items = await workoutPlans
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var totalPages = (int)Math.Ceiling((double)total / pageSize);
+
+            return Ok(new
+            {
+                items,
+                page,
+                pageSize,
+                totalItems = total,
+                totalPages
+            });
         }
         [HttpGet("{id}")]
         public async Task<ActionResult> GetWorkoutPlan(int id)

@@ -15,8 +15,13 @@ namespace GYM_Management_API.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult> GetAllMembers(string search, bool? IsActive, int? TrainerId, string? sortByDate, int page = 1, int pageSize = 5)
+        public async Task<ActionResult> GetAllMembers(string? search, bool? IsActive, int? TrainerId, string? sortByDate, int page = 1, int pageSize = 5)
         {
+            if (page < 1 || pageSize < 1)
+            {
+                return BadRequest("Page and pageSize must be greater than 0.");
+            }
+
             IQueryable<Member> query = _context.Members;
             if (!string.IsNullOrEmpty(search))
             {
@@ -56,7 +61,16 @@ namespace GYM_Management_API.Controllers
 
            }
            }).ToListAsync();
-            return Ok(items);
+            var totalPages = (int)Math.Ceiling((double)total / pageSize);
+
+            return Ok(new
+            {
+                items,
+                page,
+                pageSize,
+                totalItems = total,
+                totalPages
+            });
 
         }
         [HttpGet("{id}")]
