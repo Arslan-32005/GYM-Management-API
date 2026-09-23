@@ -10,7 +10,5 @@ namespace GYM_Management_API.Models
         public WorkoutPlan WorkoutPlan { get; set; }
         public DateTime AssignedDate { get; set; }
         public string Notes { get; set; }
-        public ICollection<Member> Members { get; set; }
-        public ICollection<WorkoutPlan> WorkoutPlans { get; set; }
     }
 }

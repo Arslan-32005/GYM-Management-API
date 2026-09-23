@@ -9,11 +9,11 @@ namespace GYM_Management_API.Models
         [Required]
         public string Goal { get; set; }
         [Required]
-        [Range(0, int.MaxValue, ErrorMessage = "Duration must be a Greater than zero.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Duration must be a Greater than zero.")]
         public int DurationInWeeks { get; set; }
         [Required]
         public string DifficultyLevel { get; set; }
-        public MemberWorkoutPlan MemberWorkoutPlan { get; set; }
+        public ICollection<MemberWorkoutPlan> MemberWorkoutPlans { get; set; }
 
     }
 }
