@@ -83,7 +83,7 @@ namespace GYM_Management_API.Controllers
             {
                 return NotFound();
             }
-            return Ok();
+            return Ok(workoutPlan);
         }
         [HttpPost]
         public async Task<ActionResult> CreateWorkoutPlan(WorkoutPlan workoutPlan)
