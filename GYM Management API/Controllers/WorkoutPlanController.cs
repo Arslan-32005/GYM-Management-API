@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using GYM_Management_API.Data;
+﻿using GYM_Management_API.Data;
 using GYM_Management_API.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace GYM_Management_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WorkoutPlanController : ControllerBase
     {
         private readonly GymContext _context;
@@ -85,6 +87,7 @@ namespace GYM_Management_API.Controllers
             }
             return Ok(workoutPlan);
         }
+        [Authorize(Roles = "Trainer")]
         [HttpPost]
         public async Task<ActionResult> CreateWorkoutPlan(WorkoutPlan workoutPlan)
         {
@@ -93,6 +96,7 @@ namespace GYM_Management_API.Controllers
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetWorkoutPlan), new { id = workoutPlan.Id }, workoutPlan);
         }
+        [Authorize(Roles = "Trainer")]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateWorkoutPlan(int id, WorkoutPlan updatedWorkoutPlan)
         {
@@ -112,6 +116,7 @@ namespace GYM_Management_API.Controllers
             await _context.SaveChangesAsync();
             return Ok(updatedWorkoutPlan);
         }
+        [Authorize(Roles = "Trainer")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteWorkoutPlan(int id)
         {

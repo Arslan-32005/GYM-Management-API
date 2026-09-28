@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using GYM_Management_API.Data;
 using GYM_Management_API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Client.NativeInterop;
 
 namespace GYM_Management_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TrainerController : ControllerBase
     {
         private readonly GymContext _context;
@@ -73,6 +75,7 @@ namespace GYM_Management_API.Controllers
             }
             return Ok(trainer);
         }
+        [Authorize(Roles = "Trainer")]
         [HttpPost]
         public async Task<ActionResult> CreateTrainer(Trainer trainer)
         {
@@ -80,6 +83,7 @@ namespace GYM_Management_API.Controllers
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetTrainer), new { id = trainer.Id }, trainer);
         }
+        [Authorize(Roles = "Trainer")]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateTrainer(int id, Trainer updatedTrainer)
         {
@@ -100,6 +104,7 @@ namespace GYM_Management_API.Controllers
             await _context.SaveChangesAsync();
             return Ok(trainer);
         }
+        [Authorize(Roles = "Trainer")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteTrainer(int id)
         {

@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using GYM_Management_API.Models;
+using System.Reflection;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 namespace GYM_Management_API.Data
 {
-    public class GymContext: DbContext
+    public class GymContext: IdentityDbContext<ApplicationUser>
     {
-        public GymContext(DbContextOptions options) : base(options)
+        public GymContext(DbContextOptions<GymContext> options) : base(options)
         {
         }
+       
         public DbSet<Member> Members { get; set; }
         public DbSet<Trainer> Trainers { get; set; }
         public DbSet<Membership> Memberships { get; set; }
@@ -15,6 +18,8 @@ namespace GYM_Management_API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             modelBuilder.Entity<Trainer>()
                 .HasMany(t => t.Members)
                 .WithOne(m => m.Trainer)
@@ -101,9 +106,6 @@ namespace GYM_Management_API.Data
             modelBuilder.Entity<WorkoutPlan>()
                 .Property(w => w.DifficultyLevel)
                 .HasMaxLength(30);
-
-
-            base.OnModelCreating(modelBuilder);
         }
     }
     

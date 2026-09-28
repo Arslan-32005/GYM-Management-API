@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using GYM_Management_API.Data;
 using GYM_Management_API.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GYM_Management_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MembershipController : ControllerBase
     {
         private readonly GymContext _context;
@@ -84,6 +86,7 @@ namespace GYM_Management_API.Controllers
                 }
                 return Ok(membership);
         }
+        [Authorize(Roles = "Trainer")]
         [HttpPost]
         public async Task<ActionResult> CreateMembership(Membership membership)
         {
@@ -117,6 +120,7 @@ namespace GYM_Management_API.Controllers
             await _context.SaveChangesAsync();
              return CreatedAtAction(nameof(GetMembership), new { id = membership.Id }, membership);
         }
+        [Authorize(Roles = "Trainer")]
         [HttpPut("{id}")]
         public async Task<ActionResult>UpdateMembership(int id, Membership updatedMembership)
         {
@@ -166,6 +170,7 @@ namespace GYM_Management_API.Controllers
             return Ok(membership);
 
         }
+        [Authorize(Roles = "Trainer")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMembership(int id)
         {

@@ -1,0 +1,38 @@
+@host = https://localhost:7161
+
+###
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{ "email": "trainer@gym.com", "password": "Test@123", "fullName": "Trainer One" }
+
+###
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "trainer@gym.com", "password": "Test@123" }
+
+###
+GET {{host}}/api/trainer
+Authorization: Bearer <token>
+###
+POST {{host}}/api/workoutplan
+Authorization: Bearer <token>
+Content-Type: application/json
+{ "name": "Test Plan", "goal": "Fat Loss", "durationWeeks": 4, "difficultyLevel": "Beginner" }
+
+###
+DELETE {{host}}/api/trainer/999
+Authorization: Bearer <token>
+
+###
+POST {{host}}/api/workoutplan
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{ "name": "Test Plan", "goal": "Fat Loss", "durationWeeks": 4, "difficultyLevel": "Beginner" }
+
+
+###
+DELETE {{host}}/api/trainer/999
+Authorization: Bearer <token>
