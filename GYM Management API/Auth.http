@@ -17,7 +17,7 @@ GET {{host}}/api/trainer
 Authorization: Bearer <token>
 ###
 POST {{host}}/api/workoutplan
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjAyMTg5MjRlLTU1YzItNDI3Yi1iMDRhLTBiYjIzMDMxMDU4MCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Im1lbWJlcjFAZ3ltLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1lbWJlciIsImV4cCI6MTc5MjI3Mzk3NiwiaXNzIjoiR3ltQXBpIiwiYXVkIjoiR3ltQXBpVXNlcnMifQ.gE1VSkB6JzCIlaQdl_qGgRvIYXkx052npwoWL8VnqsM
+Authorization: Bearer <token>
 Content-Type: application/json
 { "name": "Test Plan", "goal": "Fat Loss", "durationWeeks": 4, "difficultyLevel": "Beginner" }
 
