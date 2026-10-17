@@ -32,7 +32,13 @@ ASP.NET Core Web API · EF Core · SQL Server · ASP.NET Core Identity · JWT Be
 | Member | Read all resources |
 | Trainer | Read, create, update, delete |
 
-<<Trainer account creation: describe the fixed method here>>
+### Creating a Trainer account
+Trainer accounts are seeded at startup from user-secrets. Set them once:
+
+dotnet user-secrets set "SeedTrainer:Email" "<email>"
+dotnet user-secrets set "SeedTrainer:Password" "<password>"
+
+The seed runs only if the email is not already registered.
 
 ## Endpoints (Member, Trainer, Membership, WorkoutPlan, MemberWorkoutPlan)
 | Method | Route | Role |
@@ -50,3 +56,7 @@ Example: GET /api/Member?search=Ali&isActive=true&trainerId=2&page=1&pageSize=5
 
 ## Project Structure
 Controllers/ · Models/ · DTOs/ · Data/GymContext.cs · Migrations/ · Auth.http (sample requests)
+
+## Known Limitations
+- Members can read all members and workout plans. There is no ownership check yet, because a Member account is not linked to its own Member record.
+- Public registration always creates a Member account. Trainers are created only through the seed.
