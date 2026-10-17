@@ -1,73 +1,52 @@
-# Gym Management Web API
+# Gym Management API
 
-A RESTful Gym Management API built with ASP.NET Core Web API, Entity Framework Core (Code First), and SQL Server.
+RESTful API for managing gym members, trainers, memberships and workout plans.
+Built with ASP.NET Core 10 Web API, EF Core (Code First) and SQL Server.
 
-# Tech Stack
-ASP.NET Core Web API / C#
-Entity Framework Core (Code First, Migrations)
-SQL Server
-LINQ, Fluent API, async/await
-# Project Structure
-GYM Management API
-├── Controllers/
-│   ├── MemberController.cs
-│   ├── TrainerController.cs
-│   ├── MembershipController.cs
-│   ├── WorkoutPlanController.cs
-│   └── MemberWorkoutPlanController.cs
-├── Models/
-│   ├── Member.cs
-│   ├── Trainer.cs
-│   ├── Membership.cs
-│   ├── WorkoutPlan.cs
-│   └── MemberWorkoutPlan.cs
-├── Data/
-│   └── GymContext.cs
-└── Migrations/
-# Entities & Relationships
-Trainer 1 → * Member (optional assignment, delete restricted while members exist)
-Member 1 → * Membership (cascade delete)
-Member 1 → * MemberWorkoutPlan (cascade delete)
-WorkoutPlan 1 → * MemberWorkoutPlan (delete restricted while assignments exist)
-Member * ↔ * WorkoutPlan via the MemberWorkoutPlan junction entity
-Fluent API Configuration (GymContext.OnModelCreating)
-Relationship + delete-behavior setup for all four relationships above
-Unique composite index on MemberWorkoutPlan(MemberId, WorkoutPlanId) — prevents duplicate assignment at the database level
-Membership.Fee precision set to decimal(8,2)
-Max-length constraints on string fields (FullName, Email, PhoneNumber, PlanName, etc.)
-Validation
-Data Annotations on models: [Required], [EmailAddress], [Range]
-Business rules enforced in controllers (not achievable via annotations alone):
-Trainer must exist and be available before assignment
-Membership EndDate must be after StartDate
-No overlapping active memberships for the same member
-Inactive member cannot be assigned a workout plan
-No duplicate Member + WorkoutPlan assignment
-Trainer / WorkoutPlan cannot be deleted while referenced
-Endpoints (per controller: Member, Trainer, Membership, WorkoutPlan, MemberWorkoutPlan)
-GET    /api/{Resource}            (search / filter / sort / pagination)
-GET    /api/{Resource}/{id}
-POST   /api/{Resource}
-PUT    /api/{Resource}/{id}
-DELETE /api/{Resource}/{id}
+## Features
+- Identity registration/login with JWT Bearer authentication (2-hour tokens)
+- Role-based authorization: Member (read) and Trainer (create/update/delete)
+- Fluent API relationships, delete rules, and a unique index on MemberWorkoutPlan(MemberId, WorkoutPlanId)
+- Business rules in controllers: no overlapping memberships, inactive members can't get plans, trainer/plan can't be deleted while referenced
+- Pagination, search, filtering and sorting on list endpoints
 
-# Example:
+## Tech Stack
+ASP.NET Core Web API · EF Core · SQL Server · ASP.NET Core Identity · JWT Bearer · OpenAPI
 
-GET /api/Member?search=Ali&isActive=true&trainerId=2&page=1&pageSize=5
-Async Data Access
-All EF Core calls use async methods: ToListAsync(), FirstOrDefaultAsync(), FindAsync(), AnyAsync(), CountAsync(), SaveChangesAsync().
-Pagination
-Skip = (page - 1) × pageSize
-Response includes items, page, pageSize, totalItems, totalPages.
+## Setup
+1. Install .NET 10 SDK and SQL Server (or SQL Server Express).
+2. Set the connection string in `appsettings.json` (`ConnectionStrings:Default`).
+3. Set the JWT secret (never commit it):
+   `dotnet user-secrets set "Jwt:Key" "<at least 32 characters>"`
+4. Apply migrations: `dotnet ef database update`
+5. Run: `dotnet run` and open `/openapi/v1.json` in Development.
 
-# Projections (DTO-style)
+## Authentication
+- `POST /api/auth/register` creates a user with the Member role.
+- `POST /api/auth/login` returns `{ token, expiry }`.
+- Send `Authorization: Bearer <token>` on every endpoint except register and login.
 
-GET endpoints project entities into anonymous objects (e.g. Select(m => new { ... })) instead of returning full entities — avoids circular-reference issues from navigation properties and controls exactly what fields the client sees.
+## Roles
+| Role | Can |
+|---|---|
+| Member | Read all resources |
+| Trainer | Read, create, update, delete |
 
-HTTP Status Codes
-Code	Usage
-200 OK	Successful GET/PUT
-201 Created	Successful POST
-204 No Content	Successful DELETE
-400 Bad Request	Validation / business-rule violation
-404 Not Found	Resource does not exist
+<<Trainer account creation: describe the fixed method here>>
+
+## Endpoints (Member, Trainer, Membership, WorkoutPlan, MemberWorkoutPlan)
+| Method | Route | Role |
+|---|---|---|
+| GET | /api/{resource} | Any authenticated user |
+| GET | /api/{resource}/{id} | Any authenticated user |
+| POST | /api/{resource} | Trainer |
+| PUT | /api/{resource}/{id} | Trainer |
+| DELETE | /api/{resource}/{id} | Trainer |
+
+Example: GET /api/Member?search=Ali&isActive=true&trainerId=2&page=1&pageSize=5
+
+## Status Codes
+200 OK (GET/PUT) · 201 Created (POST) · 204 No Content (DELETE) · 400 Bad Request (validation/business rule) · 401 Unauthorized · 403 Forbidden (wrong role) · 404 Not Found
+
+## Project Structure
+Controllers/ · Models/ · DTOs/ · Data/GymContext.cs · Migrations/ · Auth.http (sample requests)
