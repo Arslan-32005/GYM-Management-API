@@ -8,7 +8,7 @@ namespace GYM_Management_API.Models
         [Required]
         public string FullName { get; set; }
         [Required]
-        [Range(15, 80, ErrorMessage = "Age must be between 18 and 80.")]
+        [Range(15, 80, ErrorMessage = "Age must be between 15 and 80.")]
         public int Age { get; set; }
         [Required]
         public string Gender { get; set; }

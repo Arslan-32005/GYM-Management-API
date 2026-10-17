@@ -47,6 +47,22 @@ using (var scope = app.Services.CreateScope())
         if (!await roleManager.RoleExistsAsync(role))
             await roleManager.CreateAsync(new IdentityRole(role));
     }
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    var trainerEmail = builder.Configuration["SeedTrainer:Email"];
+    var trainerPassword = builder.Configuration["SeedTrainer:Password"];
+
+    if (!string.IsNullOrEmpty(trainerEmail) && await userManager.FindByEmailAsync(trainerEmail) == null)
+    {
+        var trainer = new ApplicationUser
+        {
+            UserName = trainerEmail,
+            Email = trainerEmail,
+            FullName = "Seed Trainer",
+            JoinDate = DateTime.UtcNow
+        };
+        await userManager.CreateAsync(trainer, trainerPassword!);
+        await userManager.AddToRoleAsync(trainer, "Trainer");
+    }
 }
 
 // Configure the HTTP request pipeline.

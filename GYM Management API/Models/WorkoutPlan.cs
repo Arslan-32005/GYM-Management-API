@@ -13,7 +13,7 @@ namespace GYM_Management_API.Models
         public int DurationWeeks { get; set; }
         [Required]
         public string DifficultyLevel { get; set; }
-        public ICollection<MemberWorkoutPlan> MemberWorkoutPlans { get; set; }
+        public ICollection<MemberWorkoutPlan>? MemberWorkoutPlans { get; set; }
 
     }
 }
